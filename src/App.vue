@@ -3,6 +3,7 @@ import GameNavbar from './components/GameNavbar.vue'
 import HorseList from './components/HorseList.vue'
 import RaceSchedule from './components/RaceSchedule.vue'
 import RaceResults from './components/RaceResults.vue'
+import RaceTrack from './components/RaceTrack.vue'
 </script>
 
 <template>
@@ -15,9 +16,7 @@ import RaceResults from './components/RaceResults.vue'
         <HorseList />
         
         <!-- Center column (3fr) -->
-        <div class="bg-card border rounded-lg p-4">
-          <p class="text-muted-foreground">Center column</p>
-        </div>
+        <RaceTrack />
         
         <!-- Right column (2fr) -->
         <div class="grid grid-cols-2 gap-4">

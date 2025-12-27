@@ -10,6 +10,19 @@ export interface RaceRound {
   }[]
 }
 
+export interface RaceTrackHorse {
+  id: number
+  name: string
+  color: string
+  position: number // 0-100, race progress percentage
+}
+
+export interface CurrentRaceRound {
+  roundNumber: number
+  distance: number
+  horses: RaceTrackHorse[]
+}
+
 // Dummy data - 6 rounds
 export const dummyRaceSchedule: RaceRound[] = [
   {
@@ -142,4 +155,22 @@ export const dummyRaceResults: RaceRound[] = [
     ]
   }
 ]
+
+// Dummy current race track data
+export const dummyCurrentRaceRound: CurrentRaceRound = {
+  roundNumber: 3,
+  distance: 1600,
+  horses: [
+    { id: 1, name: 'Thunder', color: '#FF6B6B', position: 0 },
+    { id: 2, name: 'Lightning', color: '#4ECDC4', position: 0 },
+    { id: 3, name: 'Storm', color: '#45B7D1', position: 0 },
+    { id: 4, name: 'Blaze', color: '#FFA07A', position: 0 },
+    { id: 5, name: 'Shadow', color: '#98D8C8', position: 0 },
+    { id: 6, name: 'Phoenix', color: '#F7DC6F', position: 0 },
+    { id: 7, name: 'Ace', color: '#BB8FCE', position: 0 },
+    { id: 8, name: 'Duke', color: '#85C1E2', position: 0 },
+    { id: 9, name: 'King', color: '#F8B739', position: 0 },
+    { id: 10, name: 'Prince', color: '#E74C3C', position: 0 }
+  ]
+}
 
