@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import GameNavbar from './components/GameNavbar.vue'
 import HorseList from './components/HorseList.vue'
+import RaceSchedule from './components/RaceSchedule.vue'
+import RaceResults from './components/RaceResults.vue'
 </script>
 
 <template>
@@ -18,8 +20,12 @@ import HorseList from './components/HorseList.vue'
         </div>
         
         <!-- Right column (2fr) -->
-        <div class="bg-card border rounded-lg p-4">
-          <p class="text-muted-foreground">Right column</p>
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Program -->
+          <RaceSchedule />
+          
+          <!-- Results -->
+          <RaceResults />
         </div>
       </div>
     </main>
