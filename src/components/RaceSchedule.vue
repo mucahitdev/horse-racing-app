@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed, ref, watch, nextTick } from 'vue'
+import { useStore } from 'vuex'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Table,
@@ -8,7 +10,42 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { dummyRaceSchedule } from '@/data/races'
+import { Badge } from '@/components/ui/badge'
+import EmptyState from './EmptyState.vue'
+
+const store = useStore()
+const raceSchedule = computed(() => store.state.raceSchedule || [])
+const hasSchedule = computed(() => raceSchedule.value.length > 0)
+const currentRound = computed(() => store.state.currentRound)
+const raceResults = computed(() => store.state.raceResults || [])
+const scrollContainer = ref<HTMLElement | null>(null)
+const roundRefs = ref<Record<number, HTMLElement | null>>({})
+
+// Determine round status
+function getRoundStatus(roundNumber: number) {
+  const completedRounds = raceResults.value.map((r: { round: number }) => r.round)
+  if (completedRounds.includes(roundNumber)) {
+    return 'completed'
+  }
+  // currentRound is 0-indexed, roundNumber is 1-indexed
+  if (currentRound.value !== null && currentRound.value + 1 === roundNumber) {
+    return 'current'
+  }
+  return 'pending'
+}
+
+// Auto scroll to current round
+watch(currentRound, async (newRound) => {
+  if (newRound !== null && scrollContainer.value) {
+    await nextTick()
+    // currentRound is 0-indexed, roundNumber is 1-indexed
+    const roundNumber = newRound + 1
+    const roundElement = roundRefs.value[roundNumber]
+    if (roundElement && scrollContainer.value) {
+      roundElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }
+})
 </script>
 
 <template>
@@ -17,44 +54,45 @@ import { dummyRaceSchedule } from '@/data/races'
       <CardTitle class="text-center">Program</CardTitle>
     </CardHeader>
     <CardContent class="flex-1 overflow-hidden">
-      <div class="h-full overflow-y-auto space-y-4">
+      <EmptyState
+        v-if="!hasSchedule"
+        title="Program not generated"
+        description="Click the 'Generate Program' button to create a race schedule."
+      />
+      <div
+        v-else
+        ref="scrollContainer"
+        class="h-full overflow-y-auto space-y-4"
+      >
         <div
-          v-for="round in dummyRaceSchedule"
-          :key="round.roundNumber"
+          v-for="round in raceSchedule"
+          :key="round.round"
+          :ref="(el) => { roundRefs[round.round] = el as HTMLElement }"
           class="space-y-2"
           :class="{
-            'opacity-60': round.status === 'completed',
-            'opacity-40': round.status === 'pending'
+            'opacity-40 text-muted-foreground': getRoundStatus(round.round) === 'pending',
+            'text-green-600 font-bold border-2 border-green-400 rounded-lg p-1 bg-green-50/50': getRoundStatus(round.round) === 'current',
+            'text-muted-foreground line-through bg-muted/30 rounded-lg p-1': getRoundStatus(round.round) === 'completed',
           }"
         >
-          <div
-            class="font-semibold text-center"
-            :class="{
-              'text-muted-foreground': round.status === 'pending',
-              'text-green-600 font-bold': round.status === 'current',
-              'text-muted-foreground line-through': round.status === 'completed'
-            }"
-          >
-            Round {{ round.roundNumber }} - {{ round.distance }}m
-            <span
-              v-if="round.status === 'current'"
-              class="ml-2 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded"
+          <div class="font-semibold text-center flex items-center justify-center gap-2">
+            <span>Round {{ round.round }} - {{ round.distance }}m</span>
+            <Badge
+              v-if="getRoundStatus(round.round) === 'current'"
+              variant="default"
+              class="bg-green-600 text-white"
             >
               Current
-            </span>
-            <span
-              v-if="round.status === 'completed'"
-              class="ml-2 text-xs text-green-600"
+            </Badge>
+            <Badge
+              v-else-if="getRoundStatus(round.round) === 'completed'"
+              variant="secondary"
+              class="bg-muted text-muted-foreground"
             >
               ✓
-            </span>
+            </Badge>
           </div>
-          <div
-            :class="{
-              'border-2 border-green-400 rounded-lg p-1 bg-green-50/50': round.status === 'current',
-              'bg-muted/30 rounded-lg p-1': round.status === 'completed'
-            }"
-          >
+          <div>
             <Table>
             <TableHeader>
               <TableRow>
@@ -64,10 +102,10 @@ import { dummyRaceSchedule } from '@/data/races'
             </TableHeader>
             <TableBody>
               <TableRow
-                v-for="horse in round.horses"
-                :key="`${round.roundNumber}-${horse.position}`"
+                v-for="(horse, index) in round.horses"
+                :key="`${round.round}-${horse.id || index}`"
               >
-                <TableCell class="w-20">{{ horse.position }}</TableCell>
+                <TableCell class="w-20">{{ index + 1 }}</TableCell>
                 <TableCell>{{ horse.name }}</TableCell>
               </TableRow>
             </TableBody>

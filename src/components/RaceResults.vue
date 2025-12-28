@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed, ref, watch, nextTick } from 'vue'
+import { useStore } from 'vuex'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Table,
@@ -8,7 +10,45 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { dummyRaceResults } from '@/data/races'
+import EmptyState from './EmptyState.vue'
+
+const store = useStore()
+const raceResults = computed(() => store.state.raceResults || [])
+const hasResults = computed(() => raceResults.value.length > 0)
+const hasSchedule = computed(() => store.getters.hasRaceSchedule)
+const isRacing = computed(() => store.state.isRacing)
+const scrollContainer = ref<HTMLElement | null>(null)
+
+// Determine empty state message
+const emptyStateMessage = computed(() => {
+  if (!hasSchedule.value) {
+    return {
+      title: 'Program not generated',
+      description: 'Click the "Generate Program" button to create a race schedule.'
+    }
+  }
+  if (!isRacing.value) {
+    return {
+      title: 'Race not started',
+      description: 'Click the "Start" button to begin the race.'
+    }
+  }
+  return {
+    title: 'Waiting for first round results',
+    description: 'The race has started. Results will appear here as rounds complete.'
+  }
+})
+
+// Auto scroll to bottom when new result is added
+watch(raceResults, async () => {
+  if (scrollContainer.value) {
+    await nextTick()
+    scrollContainer.value.scrollTo({
+      top: scrollContainer.value.scrollHeight,
+      behavior: 'smooth'
+    })
+  }
+}, { deep: true })
 </script>
 
 <template>
@@ -17,14 +57,23 @@ import { dummyRaceResults } from '@/data/races'
       <CardTitle class="text-center">Results</CardTitle>
     </CardHeader>
     <CardContent class="flex-1 overflow-hidden">
-      <div class="h-full overflow-y-auto space-y-4">
+      <EmptyState
+        v-if="!hasResults"
+        :title="emptyStateMessage.title"
+        :description="emptyStateMessage.description"
+      />
+      <div
+        v-else
+        ref="scrollContainer"
+        class="h-full overflow-y-auto space-y-4"
+      >
         <div
-          v-for="round in dummyRaceResults"
-          :key="round.roundNumber"
+          v-for="result in raceResults"
+          :key="result.round"
           class="space-y-2"
         >
           <div class="font-semibold text-center">
-            Round {{ round.roundNumber }} - {{ round.distance }}m
+            Round {{ result.round }} - {{ result.distance }}m
           </div>
           <Table>
             <TableHeader>
@@ -35,8 +84,8 @@ import { dummyRaceResults } from '@/data/races'
             </TableHeader>
             <TableBody>
               <TableRow
-                v-for="horse in round.horses"
-                :key="`${round.roundNumber}-${horse.position}`"
+                v-for="(horse, index) in result.horses"
+                :key="`${result.round}-${index}`"
               >
                 <TableCell class="w-20">{{ horse.position }}</TableCell>
                 <TableCell>{{ horse.name }}</TableCell>

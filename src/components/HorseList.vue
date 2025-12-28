@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useStore } from 'vuex'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Table,
@@ -8,9 +10,11 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { dummyHorses } from '@/data/horses'
+import EmptyState from './EmptyState.vue'
 
-const horses = dummyHorses
+const store = useStore()
+const horses = computed(() => store.state.horses || [])
+const hasHorses = computed(() => horses.value.length > 0)
 </script>
 
 <template>
@@ -19,7 +23,12 @@ const horses = dummyHorses
       <CardTitle class="text-center">Horses (20)</CardTitle>
     </CardHeader>
     <CardContent class="flex-1 overflow-hidden">
-      <div class="h-full overflow-y-auto">
+      <EmptyState
+        v-if="!hasHorses"
+        title="Program not generated"
+        description="Click the 'Generate Program' button to create a race schedule."
+      />
+      <div v-else class="h-full overflow-y-auto">
         <Table>
           <TableHeader>
             <TableRow>
@@ -34,7 +43,7 @@ const horses = dummyHorses
               :key="horse.id"
             >
               <TableCell class="font-semibold">{{ horse.name }}</TableCell>
-              <TableCell class="text-center">{{ horse.condition }}</TableCell>
+              <TableCell class="text-center">{{ horse.conditionScore || horse.condition }}</TableCell>
               <TableCell>
                 <div
                   class="w-8 h-8 rounded-full border-2 border-border"
