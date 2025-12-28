@@ -130,7 +130,7 @@ describe('actions', () => {
   describe('stopRace', () => {
     it('should cancel animation and finish race when active', () => {
       const mockCancelAnimationFrame = vi.fn()
-      global.cancelAnimationFrame = mockCancelAnimationFrame
+      globalThis.cancelAnimationFrame = mockCancelAnimationFrame as any
       
       const context = createContext({
         isRacing: true,
