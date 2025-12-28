@@ -49,6 +49,50 @@ pnpm preview
 4. View results as each round completes
 5. Use **"Pause"** to pause the race and **"Resume"** to continue
 
+## 🧪 Testing
+
+### Unit Tests
+
+Unit tests are written with Vitest and cover utility functions and Vuex store:
+
+```bash
+# Run unit tests
+pnpm test
+
+# Run with UI
+pnpm test:ui
+
+# Run with coverage
+pnpm test:coverage
+```
+
+**Test Coverage:**
+- Utility functions (colorUtils, schedule, animation, raceCalculator, horseGenerator)
+- Vuex store (mutations, getters, actions)
+- **Total: 50 unit tests**
+
+### E2E Tests
+
+E2E tests are written with Playwright and cover complete user flows:
+
+```bash
+# Run E2E tests
+pnpm test:e2e
+
+# Run with UI
+pnpm test:e2e:ui
+
+# Run in headed mode (browser visible)
+pnpm test:e2e:headed
+```
+
+**Test Coverage:**
+- Initial empty state
+- Generate program and display horses
+- Start race and pause/resume
+- Complete race rounds and show results
+- **Total: 7 E2E tests**
+
 ## 📁 Project Structure
 
 ```
