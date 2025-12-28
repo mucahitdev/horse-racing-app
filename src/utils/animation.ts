@@ -1,14 +1,23 @@
 import type { Horse, HorseDuration, ProgressMap } from './types'
 
 /**
- * Calculates duration for each horse based on condition score
+ * Calculates duration for each horse based on condition score and luck factor
  * @param horses - Array of horses
  * @param baseDuration - Base duration in milliseconds
  * @returns Array of objects with horse and duration
  */
 export function calculateHorseDurations(horses: Horse[], baseDuration: number = 4000): HorseDuration[] {
   return horses.map((horse) => {
-    const speedMultiplier = 0.5 + (horse.conditionScore / 100) * 0.5
+    // Base speed multiplier from condition score (0.5 to 1.0)
+    const conditionMultiplier = 0.5 + (horse.conditionScore / 100) * 0.5
+    
+    // Luck factor: random multiplier between 0.85 and 1.15 (±15% variation)
+    // This adds unpredictability to races while still favoring horses with higher condition
+    const luckFactor = 0.85 + Math.random() * 0.3
+    
+    // Final speed multiplier combines condition and luck
+    const speedMultiplier = conditionMultiplier * luckFactor
+    
     return {
       horse,
       duration: baseDuration / speedMultiplier, // Slower horses take longer
