@@ -1,38 +1,3 @@
-<template>
-  <div
-    class="absolute top-1/2 z-30 flex items-center gap-2"
-    :style="{
-      left: isFinished 
-        ? 'calc(100% + 32px)' 
-        : `calc(${Math.max((props.progress || 0) * 100, 0)}% - 64px)`,
-      transform: isFinished 
-        ? 'translateY(-50%) translateX(-50%)' 
-        : 'translateY(-50%)',
-      transition: isFinished 
-        ? 'left 0.8s ease-out, transform 0.8s ease-out' 
-        : 'none',
-    }"
-  >
-    <span
-      class="text-xs font-semibold px-2 py-0.5 rounded shadow whitespace-nowrap"
-      :style="{
-        backgroundColor: props.horse.color,
-        color: getTextColor(props.horse.color),
-      }"
-    >
-      {{ props.horse.name }}
-    </span>
-    <div 
-      ref="lottieContainer" 
-      style="width: 64px; height: 64px"
-      :style="{ 
-        opacity: isFinished ? 0 : 1,
-        transition: 'opacity 0.5s ease-out'
-      }"
-    ></div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, onBeforeUnmount } from 'vue'
 import { useStore } from 'vuex'
@@ -115,4 +80,39 @@ watch(() => props.progress, (newProgress, oldProgress) => {
   }
 })
 </script>
+
+<template>
+  <div
+    class="absolute top-1/2 z-30 flex items-center gap-2"
+    :style="{
+      left: isFinished 
+        ? 'calc(100% + 32px)' 
+        : `calc(${Math.max((props.progress || 0) * 100, 0)}% - 64px)`,
+      transform: isFinished 
+        ? 'translateY(-50%) translateX(-50%)' 
+        : 'translateY(-50%)',
+      transition: isFinished 
+        ? 'left 0.8s ease-out, transform 0.8s ease-out' 
+        : 'none',
+    }"
+  >
+    <span
+      class="text-xs font-semibold px-2 py-0.5 rounded shadow whitespace-nowrap"
+      :style="{
+        backgroundColor: props.horse.color,
+        color: getTextColor(props.horse.color),
+      }"
+    >
+      {{ props.horse.name }}
+    </span>
+    <div 
+      ref="lottieContainer" 
+      style="width: 64px; height: 64px"
+      :style="{ 
+        opacity: isFinished ? 0 : 1,
+        transition: 'opacity 0.5s ease-out'
+      }"
+    ></div>
+  </div>
+</template>
 
