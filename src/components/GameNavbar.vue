@@ -28,28 +28,33 @@ function handlePause() {
 
 <template>
   <header class="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-    <div class="w-full flex h-16 items-center justify-between px-4">
-      <!-- Left side - Game Name -->
-      <div class="flex items-center gap-2">
-        <h1 class="text-xl font-bold tracking-tight">
+    <div class="w-full flex flex-col md:flex-row md:h-16 md:items-center md:justify-between py-3 md:py-0 px-4 gap-3 md:gap-0">
+      <!-- Game Name -->
+      <div class="flex items-center justify-center md:justify-start">
+        <h1 class="text-lg md:text-xl font-bold tracking-tight">
           🐎 Horse Racing Game
         </h1>
       </div>
 
-      <!-- Right side - Buttons -->
-      <div class="flex items-center gap-3">
+      <!-- Buttons -->
+      <div class="flex items-center justify-center gap-2 md:gap-3">
         <Button
           variant="outline"
+          class="flex-1 md:flex-none"
           @click="handleGenerateProgram"
         >
           Generate Program
         </Button>
         
-        <Separator orientation="vertical" class="h-6" />
+        <Separator 
+          orientation="vertical" 
+          class="hidden md:flex h-6" 
+        />
         
         <Button
           v-if="!isRacing"
           :disabled="!hasSchedule"
+          class="flex-1 md:flex-none"
           @click="handleStart"
         >
           Start
@@ -58,6 +63,7 @@ function handlePause() {
         <Button
           v-else
           variant="secondary"
+          class="flex-1 md:flex-none"
           @click="handlePause"
         >
           {{ isPaused ? 'Resume' : 'Pause' }}

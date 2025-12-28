@@ -11,15 +11,19 @@ import RaceTrack from './components/RaceTrack.vue'
     <GameNavbar />
     
     <main class="w-full px-4 py-8">
-      <div class="grid grid-cols-[1fr_3fr_2fr] gap-6">
-        <!-- Left column (1fr) -->
-        <HorseList />
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_3fr_2fr] gap-6">
+        <!-- Horses - Mobile: full, Tablet: left top, Desktop: left -->
+        <div class="order-1 md:order-1 lg:order-1">
+          <HorseList />
+        </div>
         
-        <!-- Center column (3fr) -->
-        <RaceTrack />
+        <!-- Race Track - Mobile: full, Tablet: right top, Desktop: center -->
+        <div class="order-2 md:order-2 lg:order-2">
+          <RaceTrack />
+        </div>
         
-        <!-- Right column (2fr) -->
-        <div class="grid grid-cols-2 gap-4">
+        <!-- Program and Results - Mobile: full, Tablet: bottom row, Desktop: right -->
+        <div class="order-3 md:col-span-2 md:order-3 lg:col-span-1 lg:order-3 grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Program -->
           <RaceSchedule />
           
