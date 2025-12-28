@@ -14,7 +14,15 @@ export default {
     const horses = generateHorses(20)
     commit('SET_HORSES', horses)
   },
-  generateProgram({ dispatch }) {
+  generateProgram({ dispatch, state, commit }) {
+    // Stop active race if running
+    if (state.isRacing) {
+      dispatch('stopRace')
+    }
+
+    // Reset all game data
+    commit('RESET_GAME')
+
     // Generate horse list
     dispatch('generateHorses')
 

@@ -20,7 +20,9 @@ const hasHorses = computed(() => horses.value.length > 0)
 <template>
   <Card class="h-[calc(100vh-8rem)] flex flex-col">
     <CardHeader>
-      <CardTitle class="text-center">Horses (20)</CardTitle>
+      <CardTitle class="text-center">
+        Horses {{ hasHorses ? `(${horses.length})` : '' }}
+      </CardTitle>
     </CardHeader>
     <CardContent class="flex-1 overflow-hidden">
       <EmptyState

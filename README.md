@@ -4,7 +4,7 @@ An interactive horse racing game built with Vue.js, featuring real-time animatio
 
 ## 🚀 Live Demo
 
-[horcerace.mucahitk.com](https://horcerace.mucahitk.com)
+[horserace.mucahitk.com](https://horserace.mucahitk.com)
 
 ## ✨ Features
 
